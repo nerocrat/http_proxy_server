@@ -1,6 +1,6 @@
 const
   socks5 = require('simple-socks'),
-  server = socks5.createServer().listen(1080, function () {
+  server = socks5.createServer().listen(process.env.PORT || 1080, function () { // heroku динамически назначает порт в env, указать фиксированный нельзя
   console.log('SOCKS5 proxy server started');
 });
   
