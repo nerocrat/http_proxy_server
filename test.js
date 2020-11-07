@@ -10,8 +10,8 @@ openssl x509 -req -in client.csr -signkey client-key.pem -out client-cert.pem
 
 
 const options = {
-  key: fs.readFileSync('client-key.pem'),
-  cert: fs.readFileSync('client-cert.pem')
+  key: fs.readFileSync('server.crt'),
+  cert: fs.readFileSync('server.key')
 };
 /*
 const options = {
