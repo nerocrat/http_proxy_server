@@ -3,9 +3,7 @@ const fs = require('fs');
 
 /*
 linux:
-openssl genrsa -out client-key.pem 2048
-openssl req -new -key client-key.pem -out client.csr
-openssl x509 -req -in client.csr -signkey client-key.pem -out client-cert.pem
+openssl req -x509 -newkey rsa:2048 -sha256 -days 3650 -nodes -keyout server-key.pem -out server-cert.pem -subj /CN=<ip> -addext subjectAltName=IP:<ip>
 */
 
 
