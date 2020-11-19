@@ -73,21 +73,21 @@ function on_request(client_req, client_res) {
             headers: client_req.headers
         };
         const client_error_handler = err => {
-            console.error(`client socket error: ${err.message}`)
+            console.warn(`client socket error: ${err.message}`)
             if (!proxy_req.writableEnded)
                 proxy_req.end();
         }
         const server_error_handler = err => {
-            console.error(`server socket error: ${err.message}`)
+            console.warn(`server socket error: ${err.message}`)
             if (!client_res.writableEnded)
                 client_res.end(`HTTP/1.1 500 ${err.message}\r\n`)
         }
         const proxy_req = http.request(options, function (res) {
             client_res.writeHead(res.statusCode, res.headers)
-            proxy_req.on('error', server_error_handler);
             res.pipe(client_res);
         });
         client_req.on('error', client_error_handler);
+        proxy_req.on('error', server_error_handler);
         client_req.pipe(proxy_req);
     } catch (e) {
         if (e.code === 'ERR_INVALID_URL') {
@@ -107,13 +107,13 @@ function on_connect(req, client_socket, head) {
             return;
         const dst = new URL(`http://${req.url}`);
         const client_error_handler = err => {
-            console.error(`client socket error: ${err.message}`)
+            console.warn(`client socket error: ${err.message}`)
             if (!server_socket.destroyed) {
                 server_socket.end();
             }
         }
         const server_error_handler = err => {
-            console.error(`server socket error: ${err.message}`)
+            console.warn(`server socket error: ${err.message}`)
             if (!client_socket.destroyed) {
                 client_socket.end(`HTTP/1.1 500 ${err.message}\r\n`)
             }
