@@ -100,41 +100,41 @@ function on_request(client_req, client_res) {
         }
     }
 }
-function on_connect(req, clientSocket, head) {
+function on_connect(req, client_socket, head) {
     try {
-        console.log(clientSocket.remoteAddress, clientSocket.remotePort, req.method, req.url)
-        if (!this._check_auth(req, clientSocket))
+        console.log(client_socket.remoteAddress, client_socket.remotePort, req.method, req.url)
+        if (!this._check_auth(req, client_socket))
             return;
         const dst = new URL(`http://${req.url}`);
-        const clientErrorHandler = err => {
+        const client_error_handler = err => {
             console.error(`client socket error: ${err.message}`)
-            if (!serverSocket.destroyed) {
-                serverSocket.end();
+            if (!server_socket.destroyed) {
+                server_socket.end();
             }
         }
-        const serverErrorHandler = err => {
+        const server_error_handler = err => {
             console.error(`server socket error: ${err.message}`)
-            if (!clientSocket.destroyed) {
-                clientSocket.end(`HTTP/1.1 500 ${err.message}\r\n`)
+            if (!client_socket.destroyed) {
+                client_socket.end(`HTTP/1.1 500 ${err.message}\r\n`)
             }
         }
-        const serverSocket = net.createConnection(dst.port || 80, dst.hostname);
-        clientSocket.on('error', clientErrorHandler);
-        serverSocket.on('error', serverErrorHandler);
-        serverSocket.on('connect', () => {
-            clientSocket.write(['HTTP/1.1 200 Connection Established', ].join('\r\n'))
-            clientSocket.write('\r\n\r\n')
-            serverSocket.pipe(clientSocket);
-            clientSocket.pipe(serverSocket);
+        const server_socket = net.createConnection(dst.port || 80, dst.hostname);
+        client_socket.on('error', client_error_handler);
+        server_socket.on('error', server_error_handler);
+        server_socket.on('connect', () => {
+            client_socket.write(['HTTP/1.1 200 Connection Established', ].join('\r\n'))
+            client_socket.write('\r\n\r\n')
+            server_socket.pipe(client_socket);
+            client_socket.pipe(server_socket);
         })
     } catch (e) {
         if (e.code === 'ERR_INVALID_URL') {
             console.log(`bad requested url: ${req.url}`)
-            clientSocket.end('HTTP/1.1 400 Bad Request\r\n');
-            clientSocket.destroy();
+            client_socket.end('HTTP/1.1 400 Bad Request\r\n');
+            client_socket.destroy();
         } else {
             console.error(`proxy server error: ${e.message}`)
-            clientSocket.end(`HTTP/1.1 500 Internal Server Error\r\n`);
+            client_socket.end(`HTTP/1.1 500 Internal Server Error\r\n`);
         }
     }
 }
