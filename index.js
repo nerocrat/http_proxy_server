@@ -11,7 +11,7 @@ const config = {
     requestCert: true,
     rejectUnauthorized: true,
 }
-const port = 8000;
+const port = 80;
 const server = http_proxy_server.create(config);
 const listener = server.listen(port, err => {
     if (err)
