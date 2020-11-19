@@ -1,15 +1,12 @@
 {
-  "name": "simple_socks_server",
+  "name": "http_proxy_server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "simple-socks": "^2.1.0"
-  }
+  "dependencies": {}
 }
